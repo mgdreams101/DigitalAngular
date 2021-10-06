@@ -1,25 +1,40 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { EmployeeDetailsComponent } from '../employee-details/employee-details.component';
+import { Observable } from "rxjs";
+import { EmployeeService } from "../employee.service";
+import { Employee } from "../employee";
+import { Component, OnInit } from "@angular/core";
+import { Router } from '@angular/router';
 
-import { EmployeeListComponent } from './employee-list.component';
+@Component({
+  selector: "app-employee-list",
+  templateUrl: "./employee-list.component.html",
+  styleUrls: ["./employee-list.component.css"]
+})
+export class EmployeeListComponent implements OnInit {
+  employees: Observable<Employee[]>;
 
-describe('EmployeeListComponent', () => {
-  let component: EmployeeListComponent;
-  let fixture: ComponentFixture<EmployeeListComponent>;
+  constructor(private employeeService: EmployeeService,
+    private router: Router) {}
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ EmployeeListComponent ]
-    })
-    .compileComponents();
-  });
+  ngOnInit() {
+    this.reloadData();
+  }
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EmployeeListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  reloadData() {
+    this.employees = this.employeeService.getEmployeesList();
+  }
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+  deleteEmployee(id: number) {
+    this.employeeService.deleteEmployee(id)
+      .subscribe(
+        data => {
+          console.log(data);
+          this.reloadData();
+        },
+        error => console.log(error));
+  }
+
+  employeeDetails(id: number){
+    this.router.navigate(['details', id]);
+  }
+}
