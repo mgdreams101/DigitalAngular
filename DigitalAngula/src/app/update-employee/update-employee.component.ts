@@ -12,6 +12,7 @@ export class UpdateEmployeeComponent implements OnInit {
 
   id: number;
   employee: Employee;
+  submitted = false;
 
   constructor(private route: ActivatedRoute,private router: Router,
     private employeeService: EmployeeService) { }
@@ -38,7 +39,8 @@ export class UpdateEmployeeComponent implements OnInit {
   }
 
   onSubmit() {
-    this.updateEmployee();    
+    this.updateEmployee(); 
+    this.submitted = true;   
   }
 
   gotoList() {
